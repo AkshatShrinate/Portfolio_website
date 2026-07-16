@@ -264,9 +264,12 @@ document.addEventListener("DOMContentLoaded", () => {
       </button>
 
 
-      <a href="https://instagram.com/AKSHAT.SINGH.SHRINATE" class="nav-icon-btn">
-        <i class="fa-regular fa-comment-dots"></i>
-      </a>
+     <a href="https://instagram.com/AKSHAT.SINGH.SHRINATE"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="nav-icon-btn">
+    <i class="fa-brands fa-instagram"></i>
+</a>
      
       <div class="nav-links">
         <a href="main.html" class="${currentPath === 'main.html' || currentPath === '' ? 'active' : ''}"><span>Home</span></a>
