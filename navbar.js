@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </button>
 
 
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=akshatshrinate2002@gmail.com" class="nav-icon-btn">
+      <a href="https://instagram.com/AKSHAT.SINGH.SHRINATE" class="nav-icon-btn">
         <i class="fa-regular fa-comment-dots"></i>
       </a>
      
