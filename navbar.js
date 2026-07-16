@@ -249,9 +249,9 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="mobile-drawer-links">
         <a href="main.html" class="${currentPath === 'main.html' || currentPath === '' ? 'active' : ''}"><span>Home</span></a>
         <a href="about.html" class="${currentPath === 'about.html' ? 'active' : ''}"><span>About</span></a>
-        <a href="projects.html" class="${currentPath === 'Projects.html' ? 'active' : ''}"><span>Projects</span></a>
+        <a href="Projects.html" class="${currentPath === 'Projects.html' ? 'active' : ''}"><span>Projects</span></a>
         <a href="media.html" class="${currentPath === 'media.html' ? 'active' : ''}"><span>Media</span></a>
-        <a href="assets/akshat_resume.pdf" target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+        <a href="assets/Akshat_resume.pdf" target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
         <a href="contact.html" class="${currentPath === 'contact.html' ? 'active' : ''}"><span>Contact</span></a>
       </div>
     </div>
