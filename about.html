@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Akshat Shrinate</title>
+    <!-- Elegant fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           1. RESET & BASE (Essential for consistent mobile)
+           ========================================================================== */
+        * {
+            box-sizing: border-box; /* Crucial for padding calculation */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-attachment: fixed;
+            /* Default desktop split background */
+            background: linear-gradient(to right, #669bbc 33%, #fdf0d5 33%);
+            overflow-x: hidden; /* Prevent unexpected horizontal scroll */
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ==========================================================================
+           2. ORIGINAL DESKTOP STYLES (With Sticky Image Update)
+           ========================================================================== */
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 100%;
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            align-items: flex-start; /* Ensures sticky behavior functions correctly */
+        }
+
+        /* Left Panel Styles - Updated to be sticky on desktop */
+        .left-panel {
+            background: transparent;
+            width: 33%;
+            flex-shrink: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            height: 100vh; /* Fills viewport height to center item vertically */
+            justify-content: center; /* Centers the image perfectly in the sidebar */
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        /* Right Panel Styles */
+        .right-panel {
+            background: transparent;
+            width: 67%;
+            flex-grow: 1;
+            padding: 40px 60px; /* Increased side padding for desktop */
+        }
+
+        .meta-nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 80px;
+            margin-bottom: 1rem;
+            justify-content: flex-end; /* Desktop alignment */
+        }
+
+        .meta-nav span {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: #669bbc;
+            font-weight: 600;
+        }
+
+        .main-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: #003049;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(102, 155, 188, 0.2);
+            padding-bottom: 1.5rem;
+        }
+
+        .grid-item .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #669bbc;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .grid-item .value {
+            font-size: 1.1rem;
+            color: #003049;
+            font-weight: 500;
+        }
+
+        .about-text-block h3 {
+            font-family: 'Playfair Display', serif;
+            color: #003049;
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .about-text-block p {
+            color: #333;
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Skills Showcase Layout */
+        #skills-showcase {
+            padding-top: 60px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(102, 155, 188, 0.2);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            color: #003049;
+            margin-top: 0;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Prevents default mobile grey tap block */
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        
+        /* Desktop Hover Styles (Only activates on larger screens without locking up) */
+        @media (min-width: 769px) {
+            .skill-card:hover {
+                transform: translateY(-3px);
+                background: rgba(102, 155, 188, 0.85);
+                box-shadow: 0 6px 16px rgba(102, 155, 188, 0.25);
+            }
+
+            .skill-card:hover .skill-name {
+                color: #ffffff;
+            }
+        }
+
+        .skill-icon-placeholder {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px auto;
+            background: #eee;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .skill-icon-placeholder img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        .skill-name {
+            font-size: 0.85rem;
+            color: #003049;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.2s ease;
+        }
+
+        /* Explicit selected class handles clicks on both PC and mobile */
+        .skill-card.selected {
+            background: rgba(102, 155, 188, 0.95) !important;
+            box-shadow: 0 6px 16px rgba(102, 155, 188, 0.4) !important;
+            transform: translateY(-3px) scale(0.98);
+        }
+
+        .skill-card.selected .skill-name {
+            color: #ffffff !important;
+        }
+
+        /* ==========================================================================
+           3. MOBILE & TABLET FIXES
+           ========================================================================= */
+        @media (max-width: 768px) {
+            body {
+                background: #fdf0d5 !important;
+                background-attachment: scroll !important;
+                overflow-y: auto !important;
+                height: auto !important;
+            }
+
+            .main-container {
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            /* LEFT PANEL (Banner on Mobile) */
+            .left-panel {
+                width: 100% !important;
+                height: auto !important; 
+                position: relative !important; 
+                background-color: #669bbc !important;
+                padding: 60px 24px 50px 24px !important;
+                text-align: center;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+            .image-container img {
+                max-width: 180px !important;
+                height: 180px !important;
+                border-radius: 50% !important;
+                border: 6px solid #fdf0d5 !important;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+                object-fit: cover;
+            }
+
+            /* RIGHT PANEL (Content) */
+            .right-panel {
+                width: 100% !important;
+                padding: 40px 24px 80px 24px !important;
+                background: #fdf0d5 !important;
+                height: auto !important;
+            }
+
+            .meta-nav {
+                margin-top: 0 !important;
+                margin-bottom: 2rem !important;
+                justify-content: center !important;
+                gap: 10px !important;
+                flex-wrap: wrap;
+            }
+            
+            .meta-nav span {
+                background: rgba(102, 155, 188, 0.15) !important;
+                padding: 6px 12px !important;
+                border-radius: 6px !important;
+                font-size: 0.7rem !important;
+            }
+
+            .main-name {
+                text-align: center !important;
+                font-size: 2.8rem !important;
+                margin-bottom: 2rem !important;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr 1fr !important;
+                text-align: center !important;
+                gap: 15px !important;
+                margin-bottom: 2.5rem !important;
+                padding-bottom: 2rem !important;
+            }
+            
+            .grid-item {
+                background: rgba(255, 255, 255, 0.5) !important;
+                padding: 15px 10px !important;
+                border-radius: 8px !important;
+                border: 1px solid rgba(102, 155, 188, 0.1);
+            }
+            
+            .grid-item .value {
+                font-size: 1rem !important;
+            }
+
+            .about-text-block h3 {
+                font-size: 1.6rem !important;
+                margin-top: 2.5rem !important;
+                border-left: 4px solid #669bbc;
+                padding-left: 12px;
+            }
+
+            .about-text-block p {
+                font-size: 1rem !important;
+                line-height: 1.65 !important;
+                text-align: left !important;
+                color: #222 !important;
+            }
+
+            #skills-showcase {
+                padding-top: 40px !important;
+                margin-top: 30px !important;
+            }
+            
+            .section-title {
+                text-align: center;
+                font-size: 2rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 12px !important;
+                margin-top: 1.5rem !important;
+            }
+
+            .skill-card {
+                padding: 15px 5px !important;
+                background: #ffffff !important;
+                border-radius: 10px;
+            }
+
+            .skill-icon-placeholder {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 8px;
+            }
+            
+            .skill-name {
+                font-size: 0.7rem !important;
+                letter-spacing: 0;
+            }
+        }
+    </style>
+</head>
+<body class="page-about">
+    
+    <script src="navbar.js"></script>
+
+    <div class="main-container">
+        
+        <!-- LEFT PANEL (Stays dynamically fixed in center on desktop) -->
+        <div class="left-panel">
+            <div class="image-container">
+                <img src="assets/img5.png" alt="Profile Picture of Akshat Shrinate">
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL (Scrollable Content) -->
+        <div class="right-panel">
+            
+            <!-- SECTION 1: Personal Details Summary -->
+            <section id="about-intro" class="content-section" style="padding-top: 0;">
+                
+                <div class="meta-nav">
+                    <span>Developer</span>
+                    <span>Designer</span>
+                    <span>Engineer</span>
+                </div>
+
+                <h1 class="main-name">Akshat Shrinate</h1>
+
+                <div class="profile-grid">
+                    <div class="grid-item">
+                        <div class="label">Birthdate</div>
+                        <div class="value">September 18, 2003</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="label">Birthplace</div>
+                        <div class="value">Gorakhpur, India</div>
+                    </div>
+                </div>
+
+                <div class="about-text-block">
+                    <h3>About</h3>
+                    <p>Hi, I'm Akshat Shrinate, an engineer from Gorakhpur, India, driven by a lifelong fascination with how machines sense, think, and interact with the world. I enjoy bridging the gap between hardware and AI, combining mechanics, electronics, and learning algorithms to create autonomous machines.</p>
+                    <p>I hold a Bachelor in Technology in Electronics and Communication Engineering from Punjab Engineering College, Chandigarh, with a minor specialization in Digital VLSI Technologies. My journey has taken me from analyzing cutting-edge engineering patents at Copperpod IP to my current role as Research Staff at the Bio-Inspired Robotic Systems and Design (BIRD) Laboratory, IIT Jodhpur. There, I develop controllers, write embedded software, and integrate hardware with intelligent algorithms for mobile robots and quadrupeds.</p>
+                    
+                    <h3>What's Next?</h3>
+                    <p>My interests lie at the intersection of reinforcement learning, embedded AI, control theory, and legged locomotion. I am currently exploring Master's opportunities to deepen my expertise in these areas. My long-term goal is to advance bipedal locomotion by combining rigorous classical control with modern learning-based approaches, enabling agile, adaptive machines capable of operating reliably in complex real-world environments.</p>
+                </div>
+
+            </section>
+
+            <!-- SECTION 2: Skills Grid -->
+            <section id="skills-showcase" class="content-section">
+                <h2 class="section-title">Skills & Software</h2>
+                
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/cpp.png" alt="C++"></div>
+                        <div class="skill-name">C++</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/python.png" alt="Python"></div>
+                        <div class="skill-name">Python</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/fusion360.png" alt="Fusion 360"></div>
+                        <div class="skill-name">Fusion 360</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/ros2.png" alt="ROS 2"></div>
+                        <div class="skill-name">ROS 2</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/gazebo.png" alt="Gazebo"></div>
+                        <div class="skill-name">Gazebo</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/linux.png" alt="Linux"></div>
+                        <div class="skill-name">Linux</div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/excel.png" alt="MS Excel"></div>
+                        <div class="skill-name">MS Excel</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/word.png" alt="MS Word"></div>
+                        <div class="skill-name">MS Word</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon-placeholder"><img src="assets/powerpoint.png" alt="PowerPoint"></div>
+                        <div class="skill-name">PowerPoint</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Script that forces only ONE active element at any time across mobile and PC -->
+    <script>
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Prevent the document click listener from immediately wiping our toggle action
+                e.stopPropagation(); 
+                
+                const isAlreadySelected = this.classList.contains('selected');
+                
+                // Remove highlight from ALL cards instantly
+                document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+                
+                // Toggle active state only on the item clicked
+                if (!isAlreadySelected) {
+                    this.classList.add('selected');
+                }
+            });
+        });
+
+        // Tapping or clicking anywhere outside the panels safely strips active elements back to default white
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+        });
+    </script>
+</body>
+</html>

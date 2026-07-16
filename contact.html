@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollable-page">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Me - Akshat Shrinate</title>
+    <!-- Fonts matched to your site identity -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Importing the Model Viewer component scripts for the 3D element -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           1. ROOT VARIABLES & GLOBAL RESET
+           ========================================================================== */
+        :root {
+            --bg-blue: #669bbc; 
+            --bg-cream: #fdf0d5; 
+            --text-dark: #2b2d42; 
+            --text-light: #fdf0d5; 
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --text-muted: #5e6073; 
+            --card-bg: rgba(255, 255, 255, 0.75); 
+        }
+
+        .page-contact * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ==========================================================================
+           2. DESKTOP WORKSPACE & CORE LAYOUT STYLES
+           ========================================================================== */
+        body.page-contact {
+            background-color: var(--bg-cream);
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Prevent scrolling entirely on desktop laptop viewports */
+            padding: 2rem;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1300px;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* --- LEFT SIDE PANEL: Dashboard Layout --- */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-header {
+            margin-bottom: 1rem;
+        }
+
+        .section-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--bg-blue);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(102, 155, 188, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(43, 45, 66, 0.05);
+        }
+
+        .card-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--bg-blue);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .link-row {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(43, 45, 62, 0.05);
+            transition: all 0.25s ease;
+        }
+
+        .link-row:hover {
+            background: var(--bg-blue);
+            color: var(--bg-cream);
+            transform: translateX(5px);
+            border-color: transparent;
+        }
+
+        .icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(102, 155, 188, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--bg-blue);
+            transition: all 0.25s ease;
+        }
+
+        .link-row:hover .icon-box {
+            background: rgba(253, 240, 213, 0.2);
+            color: var(--bg-cream);
+        }
+
+        .link-details {
+            flex-grow: 1;
+        }
+
+        .link-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .link-url {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.1rem;
+        }
+
+        .arrow-indicator {
+            font-size: 0.9rem;
+            opacity: 0.5;
+            transition: transform 0.25s ease;
+        }
+
+        .link-row:hover .arrow-indicator {
+            transform: translate(2px, -2px);
+            opacity: 1;
+        }
+
+        .profile-status-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(102, 155, 188, 0.1);
+            border: 1px solid rgba(102, 155, 188, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.75rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #2a9d8f; 
+            animation: pulse 2s infinite;
+        }
+
+        /* --- CENTER/RIGHT SIDE: 3D Animated Canvas Frame --- */
+        .canvas-container {
+            width: 100%;
+            height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        model-viewer {
+            width: 210%;
+            height: 100%;
+            background-color: transparent;
+            --poster-color: transparent;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(42, 157, 143, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); }
+        }
+
+        /* Responsive collapse configuration for tablet steps */
+        @media(max-width: 968px) and (min-width: 769px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .canvas-container {
+                height: 50vh;
+                grid-row: 1;
+            }
+        }
+
+        /* ==========================================================================
+           3. MOBILE & TABLET DEVICE OVERRIDES (Enforces Smooth Mobile Scrolling)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            html,
+            html.scrollable-page,
+            html.scrollable-page body,
+            body.page-contact {
+                /* Perfect sharp straight line cut right under the title container block layout */
+                background: linear-gradient(to bottom, #669bbc 0%, #669bbc 200px, #fdf0d5 200px) !important;
+                background-attachment: scroll !important;
+                display: block !important;
+                padding: 30px 0px 40px 0px !important; /* Cleared side paddings to extend full bleed across smartphone screen edges */
+                
+                /* UNLOCK SCROLL AXIS MECHANICS EXCLUSIVELY FOR SMARTPHONES */
+                overflow-y: auto !important;   
+                overflow-x: hidden !important; 
+                height: auto !important;       
+                min-height: 100vh !important;
+                max-height: none !important;
+            }
+
+            .page-wrapper {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;   
+                gap: 0 !important;
+            }
+
+            /* MOVE THE HEADLINE CONTAINER PIECE TO THE VERY TOP */
+            .content-right-wrapper {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+                padding-left: 0 !important;
+                order: 1 !important;
+            }
+
+            .section-header {
+                margin-bottom: 1.5rem !important;
+                text-align: center;
+                padding: 0 20px !important;
+            }
+
+            .section-title {
+                font-size: 2.1rem !important;
+                margin-top: 0 !important;
+                text-align: center !important;
+                color: #fdf0d5 !important;
+                line-height: 1.25 !important;
+            }
+
+            /* Wipe the standard inline desktop canvas box frame layout */
+            .content-right-wrapper .canvas-container {
+                display: none !important;
+                height: 0 !important;
+                width: 0 !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+            }
+
+            /* STACK THE VERTICAL CARD CARDS TO RENDER NEXT IN LINE */
+            .left-column {
+                width: 100% !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                order: 2 !important; 
+                gap: 1.25rem !important;
+                padding: 0 20px !important; /* Retained content paddings locally inside dashboard lists */
+                margin-bottom: 2.5rem !important;
+            }
+
+            .info-card {
+                background: #ffffff !important;
+                border: 1px solid rgba(102, 155, 188, 0.2) !important;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+                color: #2b2d42 !important;
+            }
+
+            .card-label {
+                color: #669bbc !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .link-row {
+                background: rgba(102, 155, 188, 0.08) !important;
+                color: #2b2d42 !important;
+            }
+
+            .icon-box {
+                background: rgba(102, 155, 188, 0.15) !important;
+                color: #669bbc !important;
+            }
+
+            .link-url {
+                color: #5e6073 !important;
+            }
+
+            .status-badge {
+                background: rgba(102, 155, 188, 0.1) !important;
+                border: 1px solid rgba(102, 155, 188, 0.2) !important;
+                color: #2b2d42 !important;
+            }
+
+            /* SECURELY SEAT THE 3D BOW AT THE BOTTOM BOUNDARY LIMITS */
+            .mobile-only-canvas {
+                display: flex !important;
+                order: 3 !important; 
+                width: 100% !important;
+                height: auto !important;
+                justify-content: center !important;
+                align-items: center !important;
+                margin-top: 10px !important; 
+            }
+
+            .mobile-only-canvas model-viewer {
+                width: 100% !important;
+                max-width: 450px !important;
+                height: 380px !important;
+            }
+        }
+
+        /* Ensure target fallback element remains un-rendered on wide system setups */
+        @media (min-width: 769px) {
+            .mobile-only-canvas {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="page-contact" style="background: linear-gradient(105deg, #669bbc 40%, #fdf0d5 38.1%); background-attachment: fixed; min-height: 100vh; margin: 0;">
+    
+    <script src="navbar.js"></script>
+
+    <div class="page-wrapper">
+        
+        <!-- LEFT COLUMN: Dashboard Directories -->
+        <div class="left-column">
+            
+            <!-- Directory Menu -->
+            <div class="info-card">
+                <span class="card-label">Find Me</span>
+                <div class="links-list">
+                    
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=akshatshrinate2002@gmail.com" class="link-row">
+                        <div class="icon-box">✉</div>
+                        <div class="link-details">
+                            <div class="link-title">Email</div>
+                            <div class="link-url">Click to send message</div>
+                        </div>
+                        <div class="arrow-indicator">↗</div>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/akshat-shrinate-/" target="_blank" class="link-row">
+                        <div class="icon-box">in</div>
+                        <div class="link-details">
+                            <div class="link-title">LinkedIn</div>
+                            <div class="link-url">linkedin.com/in/akshat-shrinate-</div>
+                        </div>
+                        <div class="arrow-indicator">↗</div>
+                    </a>
+
+                    <a href="https://github.com/AkshatShrinate/" target="_blank" class="link-row">
+                        <div class="icon-box">git</div>
+                        <div class="link-details">
+                            <div class="link-title">GitHub</div>
+                            <div class="link-url">github.com/AkshatShrinate</div>
+                        </div>
+                        <div class="arrow-indicator">↗</div>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Mini Status Card -->
+            <div class="info-card">
+                <div class="profile-status-box">
+                    <div>
+                        <div class="link-title" style="font-family: 'Playfair Display', serif; font-size: 1.2rem;">Akshat Shrinate</div>
+                        <div class="link-url" style="font-size: 0.85rem; margin-top: 0.2rem;"> Robotics | Embedded Systems | Machine Learning</div>
+                        <div class="status-badge">
+                            <div class="status-dot"></div>
+                            <span>Available for discussion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT AREA WRAPPER: Handles top translation configurations dynamically -->
+        <div class="content-right-wrapper" style="display: block; flex: 1; width: 100%; margin-top: 4rem; padding-left: 8%;">
+            
+            <!-- Headline Container -->
+            <div class="section-header" style="display: block; width: 100%; margin-bottom: 0.15rem;">
+                <h1 class="section-title" style="max-width: 100%; margin: 50px 0 0 0; color: #3c6e71;">Open to research collaborations & Projects.</h1>
+            </div>
+
+            <!-- LAPTOP DESKTOP COLUMN SYSTEM FRAMEWORK CONTAINER -->
+            <div class="right-column canvas-container" style="display: flex; justify-content: flex-end; width: 100%; margin-top: -80px; padding-right: 2%;">
+                <model-viewer
+                    src="assets/contact.glb"
+                    alt="3D Animated Contact Model"
+                    autoplay
+                    interaction-prompt="none"
+                    shadow-intensity="1.5"
+                    shadow-softness="1"
+                    exposure="1.2"
+                    camera-orbit="0deg 90deg 105%"
+                    style="width: 100%; height: 500px; max-width: 600px;">
+                </model-viewer>
+            </div>
+            
+        </div>
+
+        <!-- DEDICATED MOBILE CONTAINER BLOCK: Houses bow.glb at the base layer limits -->
+        <div class="mobile-only-canvas">
+            <model-viewer
+                src="assets/bow.glb"
+                alt="3D Animated Mobile Bow Model"
+                autoplay
+                interaction-prompt="none"
+                shadow-intensity="1.2"
+                shadow-softness="1"
+                exposure="1.1"
+                camera-orbit="0deg 90deg 105%">
+            </model-viewer>
+        </div>
+
+    </div>
+
+</body>
+</html>

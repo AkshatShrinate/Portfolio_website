@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="startup-cursor-active">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akshat Shrinate</title>
+   
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&amp;family=Micro+5&amp;display=swap" rel="stylesheet">
+   
+    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+
+
+
+    <!-- Project Stylesheets & Decoupled Script Pipeline -->
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body class="bg-neutral-950 overflow-hidden">
+    <!-- INTERACTIVE WHITE FLASH SCREEN LAYER OVERLAY -->
+    <div id="white-flash" style="z-index: 30000; position: fixed; inset: 0; background: #fff; pointer-events: none; opacity: 0;"></div>
+
+
+
+
+    <div id="startup-overlay" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 20000;">
+        <div id="window-light-ray"></div>
+        <div class="static-noise-layer"></div>
+        <canvas id="startup-dust-canvas"></canvas>
+       
+        <!-- INITIAL POWER BUTTON INTERFACE SCREEN -->
+        <div class="startup-panel" id="main-panel">
+            <div class="startup-name" id="sheen-name">AKSHAT SHRINATE</div>
+
+
+
+
+            <div class="startup-ring-wrapper" id="startup-ring-wrapper">
+                <div class="startup-ring-bg"><div class="startup-ring-glass"></div></div>
+                <div class="startup-ring-dark-fill"></div>
+                <div class="startup-ring-grid"></div>
+                <div class="startup-ring-rim"></div>
+               
+                <svg class="startup-ring-text" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <path id="startup-ring-path" d="M 200,200 m -168,0 a 168,168 0 1,1 336,0 a 168,168 0 1,1 -336,0" fill="none"></path>
+                    </defs>
+                    <text class="startup-ring-text-content">
+                        <textPath href="#startup-ring-path" startOffset="0%">
+                            &nbsp;&nbsp;SECRET ARCHIVE&nbsp;&nbsp;•&nbsp;&nbsp;EMBEDDED SYSTEMS&nbsp;&nbsp;•&nbsp;&nbsp;AI&nbsp;&nbsp;•&nbsp;&nbsp;ROBOTICS&nbsp;&nbsp;•&nbsp;&nbsp;COMPUTER VISION&nbsp;&nbsp;•&nbsp;&nbsp;ACCESS LEVEL: ENGINEER&nbsp;&nbsp;•
+                        </textPath>
+                    </text>
+                </svg>
+
+
+
+
+                <div class="startup-button-wrapper" id="startup-button-code">
+                    <button class="power-button" id="power-btn">
+                        <div class="cursor-reflection" id="btn-reflection"></div>
+                        <svg class="power-icon" viewBox="0 0 24 24">
+                            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                            <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+            <div class="startup-bottom-row">
+                <button class="startup-resume-btn" id="startup-resume-btn">
+                    <div class="startup-resume-left">
+                        <div class="startup-resume-icon-slot">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3v13M7 11l5 5 5-5" stroke="currentColor" stroke-width="2"></path>
+                                <path d="M5 20h14" stroke="currentColor" stroke-width="2"></path>
+                            </svg>
+                        </div>
+                        <span class="startup-resume-title">Resume</span>
+                    </div>
+                </button>
+                <a class="startup-social-btn" href="https://linkedin.com/in/AKSHAT-SHRINATE-" target="_blank" title="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z" fill="rgba(255,255,255,0.45)"></path>
+                    </svg>
+                </a>
+                <a class="startup-social-btn" href="https://instagram.com/AKSHAT.SINGH.SHRINATE" target="_blank" title="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="2" width="20" height="20" rx="5" stroke="rgba(255,255,255,0.45)" stroke-width="2"></rect>
+                        <circle cx="12" cy="12" r="5" stroke="rgba(255,255,255,0.45)" stroke-width="2"></circle>
+                        <circle cx="17.5" cy="6.5" r="1.5" fill="rgba(255,255,255,0.45)"></circle>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+
+
+
+        <!-- THEMED DUAL PANEL COMPILER MODULE -->
+        <div class="terminal-container" id="terminal-screen" style="display: none;">
+            <div class="terminal-upper-pane" id="terminal-upper-pane">
+                <svg class="capsule-logo" id="capsule-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="transparent" stroke="#38bdf8" stroke-width="6"/>
+                    <circle cx="50" cy="50" r="33" fill="#38bdf8"/>
+                    <path d="M 68,50 A 18,18 0 0,0 32,50 A 18,18 0 0,0 68,50 Z" fill="#131719"/>
+                    <rect x="44" y="32" width="26" height="36" fill="#131719"/>
+                    <circle cx="50" cy="50" r="10" fill="#38bdf8"/>
+                </svg>
+                <div id="terminal-log-output"></div>
+            </div>
+            <div class="terminal-lower-prompt-pane" id="terminal-lower-pane">
+                <span style="color: #a3a9b0;">C:\Users\akshat shrinate&gt;</span>
+                <span class="retro-cursor"></span>
+            </div>
+            <div class="robo-loading-pane" id="robo-os-layer" style="display: none;">
+                <div class="robo-title-box">
+                    <span class="robo-text-white">robo</span><span class="robo-text-cyan">OS</span>
+                </div>
+                <div class="retro-loadbar-container" id="loadbar-segments-box"></div>
+                <div class="robo-meta-stamp" style="left: 4vh;">COPYRIGHT © 2025-2026</div>
+                <div class="robo-meta-stamp" style="right: 4vh;">VERSION 1.0</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

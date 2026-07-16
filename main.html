@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  
+(function () {
+    // If main.html is opened directly (not inside index.html's iframe),
+    // redirect back to the website entry point.
+    if (window.top === window.self) {
+        window.location.replace("index.html");
+    
+    }
+})();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akshat Shrinate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <style>
+    :root{
+      --blue-deep:   #3E6684;
+      --blue:        #5D89AA;
+      --blue-soft:   #7BA3C0;
+      --cream:       #F7F1DE;
+      --cream-warm:  #F1E8D2;
+      --ink:         #16232E;
+      --ink-soft:    #2B3C4B;
+      --paper:       #EAF2F8;
+      --rust:        #B5573A;
+      --rust-soft:   #C97A5D;
+      --line:        rgba(22,35,46,0.12);
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--cream);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+    a{ color:inherit; text-decoration:none; }
+    ::selection{ background: var(--rust-soft); color:#fff; }
+
+    /* -------------------- PROGRESS RAIL -------------------- */
+    .rail{
+      position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+      z-index: 190; display:flex; flex-direction:column; gap:16px;
+    }
+    .rail button{
+      width:9px; height:9px; border-radius:50%;
+      border: 1px solid var(--ink-soft); background: transparent;
+      cursor:pointer; padding:0; transition: all .3s ease; position:relative;
+    }
+    .rail button::after{
+      content: attr(data-label);
+      position:absolute; right:20px; top:50%; transform: translateY(-50%);
+      font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+      color: var(--ink-soft); white-space:nowrap; opacity:0; pointer-events:none;
+      transition: opacity .2s ease;
+    }
+    .rail button:hover::after{ opacity:0.8; }
+    .rail button.active{ background: var(--rust); border-color: var(--rust); transform: scale(1.3); }
+    @media (max-width: 760px){ .rail{ display:none; } }
+
+    /* -------------------- STORY LAYOUT -------------------- */
+    .story{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* sticky Hope stage */
+    .story-stage{
+      position: sticky;
+      top:0;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .stage-bg{ position:absolute; inset:0; z-index:0; }
+    .stage-bg .blue-field{
+      position:absolute; inset:0;
+      background: linear-gradient(155deg, var(--blue-deep) 0%, var(--blue) 55%, var(--blue-soft) 100%);
+    }
+    .stage-bg .blue-field::before{
+      content:""; position:absolute; inset:0; opacity:0.10;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(circle at 40% 40%, black, transparent 70%);
+    }
+
+    .model-wrap{
+      position:relative; z-index:2;
+      width:min(70%, 460px); height:min(60vh, 520px);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .model-glow{
+      position:absolute; width:82%; height:82%; border-radius:50%;
+      background: radial-gradient(circle, rgba(247,241,222,0.28) 0%, rgba(247,241,222,0) 68%);
+      animation: breathe 6s ease-in-out infinite;
+    }
+    .model-ring{
+      position:absolute; width:64%; aspect-ratio:1/1; border-radius:50%;
+      border: 1px dashed rgba(247,241,222,0.35);
+      animation: spin 40s linear infinite;
+    }
+    model-viewer{
+      width:100%; height:100%;
+      --poster-color: transparent;
+      cursor: grab;
+    }
+    model-viewer:active{ cursor:grabbing; }
+
+    .model-fallback{
+      position:absolute; z-index:3; display:none; flex-direction:column; align-items:center; gap:14px;
+      color: var(--paper); text-align:center; font-size:13px; max-width:260px;
+    }
+    .model-fallback svg{ width:120px; height:120px; opacity:0.85; }
+
+    /* Hope's speech bubble */
+    .bubble{
+      position:absolute; z-index:4;
+      top:14%; left:50%; transform: translateX(-50%);
+      background: var(--cream);
+      color: var(--ink);
+      padding: 14px 20px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height:1.5;
+      max-width: 300px;
+      text-align:center;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+      opacity:0;
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .bubble::after{
+      content:"";
+      position:absolute; bottom:-9px; left:50%; margin-left:-9px;
+      width:18px; height:18px; background: var(--cream);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+    .bubble.visible{ opacity:1; transform: translateX(-50%) translateY(0); }
+    .bubble-name{
+      display:block; font-family: var(--font-display); font-style:italic;
+      color: var(--rust); font-size:12px; margin-bottom:4px; letter-spacing:0.02em;
+    }
+
+   @media (max-width: 900px){
+      .story{ grid-template-columns: 1fr; }
+      .story-stage{ height: 62vh; }
+      
+      /* 1. Shifting the bubble to the left edge */
+      .bubble{ 
+        max-width: 80px; 
+        font-size: 9px; 
+        top: 90px;           /* Pushes it safely down below the mobile menu capsule */
+        left: 48px;          /* Positions it near the left edge */
+        right: 60px;         /* Clears any right alignment values */
+        transform: none;     /* Disables the desktop centering rule */
+        text-align: left;    /* Makes the text look neat on the left side */
+      }
+      
+      /* 2. Repositioning the little triangle pointer to the right side of the bubble */
+      .bubble::after {
+        left: auto;
+        right: 24px;          
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+      }
+
+      /* 3. Shifting the robot container to the right side of the viewport */
+      .model-wrap{ 
+        width: 76%; 
+        height: 70%; 
+        margin-left: 60px;    /* Pushes the container to the right edge */
+        margin-right: -1px;  /* Slightly offsets it to balances the visual layout */
+        transform: translateY(30px); /* Adjusts vertical layout framing */
+      }
+    }
+
+    /* -------------------- CHAPTERS -------------------- */
+    .story-chapters{ position:relative; z-index:2; }
+    .chapter{
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding: 8vh 7vw;
+      background: var(--cream);
+    }
+    .chapter:nth-child(even){ background: var(--cream-warm); }
+
+    .chapter-inner{
+      max-width: 480px;
+      opacity:0;
+      transform: translateY(24px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .chapter.in-view .chapter-inner{ opacity:1; transform: translateY(0); }
+
+    .chapter-index{
+      font-family: var(--font-body);
+      font-size:12px; letter-spacing:0.24em; text-transform:uppercase;
+      color: var(--rust); font-weight:500; margin-bottom:16px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .chapter-index::before{ content:""; width:26px; height:1px; background: var(--rust); display:inline-block; }
+
+    .chapter-title{
+      font-family: var(--font-display);
+      font-size: clamp(30px, 3.6vw, 46px);
+      font-weight:600; line-height:1.12; color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .chapter-title em{ font-style:italic; color: var(--blue-deep); font-weight:500; }
+
+    .chapter-body{
+      font-size:15px; line-height:1.85; color: var(--ink-soft); font-weight:300;
+      margin-bottom: 28px;
+    }
+
+    .chapter-cta{
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:12.5px; letter-spacing:0.12em; text-transform:uppercase; font-weight:500;
+      padding: 14px 24px; border-radius:999px;
+      background: var(--blue); color:#fff;
+      transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+      box-shadow: 0 10px 24px rgba(93,137,170,0.3);
+    }
+    .chapter-cta:hover{ transform: translateY(-2px); background: var(--blue-deep); }
+    .chapter.chapter-first .chapter-cta{ background: var(--rust); box-shadow: 0 10px 24px rgba(181,87,58,0.32); }
+    .chapter.chapter-first .chapter-cta:hover{ background: #9c4a30; }
+
+    .chip-row{ margin-top:22px; display:flex; flex-wrap:wrap; gap:10px; }
+    .chip{
+      font-size:12px; letter-spacing:0.06em; padding:8px 15px; border-radius:999px;
+      border:1px solid var(--line); color: var(--ink-soft); background: rgba(255,255,255,0.5);
+    }
+
+    .status-chip{
+      margin-top: 30px; display:inline-flex; align-items:center; gap:10px;
+      font-size: 13px; color: var(--ink-soft);
+      background: rgba(255,255,255,0.55); border: 1px solid rgba(22,35,46,0.08);
+      padding: 9px 16px 9px 12px; border-radius: 999px;
+    }
+    .status-dot{
+      width:8px; height:8px; border-radius:50%; background:#2E9B6B;
+      box-shadow: 0 0 0 3px rgba(46,155,107,0.2); animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    .scroll-cue{
+      margin-top: 46px; display:flex; align-items:center; gap:10px;
+      color: var(--ink-soft); font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase;
+    }
+    .scroll-line{ width:34px; height:1px; background: var(--ink-soft); position:relative; overflow:hidden; }
+    .scroll-line::after{
+      content:""; position:absolute; left:-100%; top:0; height:100%; width:100%;
+      background: var(--rust); animation: drip-x 1.8s ease-in-out infinite;
+    }
+
+    /* -------------------- FOOTER -------------------- */
+    footer{
+      background: var(--blue-deep); color: var(--paper);
+      padding: 70px 8vw 34px; position:relative; z-index:2;
+    }
+    .footer-top{
+      display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:30px;
+      max-width:1180px; margin: 0 auto; padding-bottom: 40px;
+      border-bottom: 1px solid rgba(234,242,248,0.15);
+    }
+    .footer-name{ font-family: var(--font-display); font-size: clamp(26px,3.4vw,40px); font-weight:600; }
+    .footer-links{ display:flex; gap:26px; flex-wrap:wrap; }
+    .footer-links a{
+      font-size:13px; letter-spacing:0.08em; color: rgba(234,242,248,0.75);
+      display:flex; align-items:center; gap:8px; transition: color .25s ease;
+    }
+    .footer-links a:hover{ color:#fff; }
+    .footer-bottom{
+      max-width:1180px; margin: 24px auto 0; display:flex; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; font-size:11.5px; letter-spacing:0.08em;
+      color: rgba(234,242,248,0.55); text-transform:uppercase;
+    }
+
+    /* -------------------- KEYFRAMES -------------------- */
+    @keyframes pulse{
+      0%,100%{ box-shadow: 0 0 0 3px rgba(46,155,107,0.2); }
+      50%{ box-shadow: 0 0 0 7px rgba(46,155,107,0.06); }
+    }
+    @keyframes breathe{
+      0%,100%{ transform: scale(1); opacity:0.9; }
+      50%{ transform: scale(1.08); opacity:1; }
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+    @keyframes drip-x{ 0%{ left:-100%; } 100%{ left:100%; } }
+
+    @media (prefers-reduced-motion: reduce){
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior:auto !important; }
+      .chapter-inner{ opacity:1 !important; transform:none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Global Audio-Reactive Navbar Integration Point -->
+  <script src="navbar.js"></script>
+
+  <!-- ============= PROGRESS RAIL ============= -->
+ 
+
+  <!-- ============= STORY ============= -->
+  <div class="story">
+
+    <!-- Sticky stage: Hope lives here the whole way down -->
+    <div class="story-stage">
+      <div class="stage-bg"><div class="blue-field"></div></div>
+
+      <div class="model-wrap">
+        <div class="model-glow"></div>
+        <div class="model-ring"></div>
+
+        <model-viewer
+          id="hope"
+          src="assets/wave_1.glb"
+          alt="Hope, a small blue robot, waving with his right hand"
+          camera-controls
+          disable-zoom
+          interaction-prompt="none"
+          shadow-intensity="1"
+          shadow-softness="0.9"
+          exposure="1.05"
+          camera-orbit="8deg 78deg 105%"
+          field-of-view="30deg"
+          min-camera-orbit="auto 55deg auto"
+          max-camera-orbit="auto 100deg auto"
+          autoplay>
+        </model-viewer>
+
+        <div class="model-fallback" id="modelFallback">
+          <svg viewBox="0 0 120 120" fill="none" stroke="#F7F1DE" stroke-width="2.5">
+            <rect x="42" y="34" width="36" height="30" rx="6"/>
+            <circle cx="53" cy="47" r="3" fill="#F7F1DE"/>
+            <circle cx="67" cy="47" r="3" fill="#F7F1DE"/>
+            <line x1="60" y1="18" x2="60" y2="34"/>
+            <circle cx="60" cy="14" r="4"/>
+            <line x1="42" y1="70" x2="30" y2="60"/>
+            <line x1="30" y1="60" x2="20" y2="66"/>
+            <line x1="78" y1="70" x2="92" y2="80"/>
+            <line x1="48" y1="90" x2="46" y2="108"/>
+            <line x1="72" y1="90" x2="74" y2="108"/>
+            <line x1="48" y1="64" x2="48" y2="90"/>
+            <line x1="72" y1="64" x2="72" y2="90"/>
+          </svg>
+          <span>Drop <strong>wave_1.glb</strong> next to this file so Hope can join you.</span>
+        </div>
+      </div>
+
+      <div class="bubble visible" id="bubble">
+        <span class="bubble-name">Hope</span>
+        Hi, I'm Hope 👋 Scroll down and I'll show you around.
+      </div>
+    </div>
+
+    <!-- Scrolling chapters -->
+    <div class="story-chapters">
+
+      <section class="chapter chapter-first" id="ch-hello" data-bubble="Hi, I'm Hope 👋 Scroll down and I'll show you around." data-orbit="8deg 78deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 01 — Hello</p>
+          <h2 class="chapter-title">I'm Hope.<br><em>I live on this site.</em></h2>
+          <p class="chapter-body">Every project, every page, every line of code here; I've been along for the ride. Akshat built me first, before he built anything else on this site. Consider me your guide.</p>
+          <div class="status-chip">
+            <span class="status-dot"></span>
+            Available for research collaborations
+          </div>
+          <div class="scroll-cue"><span>Keep scrolling</span><div class="scroll-line"></div></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="ch-about" data-bubble="This is where you meet Akshat — the human behind me." data-orbit="-25deg 75deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 02 — The Human</p>
+          <h2 class="chapter-title">Meet <em>Akshat</em>,<br>the one who built me.</h2>
+          <p class="chapter-body">Robotics, embedded systems, and machine learning. He is the one that does it all. I'm just the friendliest part of the output.</p>
+          <div class="chip-row">
+            <span class="chip">C++</span><span class="chip">Python</span><span class="chip">ROS 2</span><span class="chip">Fusion 360</span>
+          </div>
+          <a class="chapter-cta" href="about.html" >Read his story →</a>
+        </div>
+      </section>
+
+      <section class="chapter" id="ch-projects" data-bubble="Come see what we've built — quadrupeds, gaits, and more." data-orbit="26deg 70deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 03 — The Workshop</p>
+          <h2 class="chapter-title">Where the <em>legs</em><br>learn to walk.</h2>
+          <p class="chapter-body">From gait patterns on the Pika quadruped to designing control systems of Dextrous Robotic Hands, this is the part of the site that actually moves. Fair warning: some of it walks better than it did last week.</p>
+          <a class="chapter-cta" href="projects.html">See the projects →</a>
+        </div>
+      </section>
+
+      <section class="chapter" id="ch-media" data-bubble="Some moments got caught on camera. Want a look?" data-orbit="-14deg 82deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 04 — Behind the Scenes</p>
+          <h2 class="chapter-title">Photos, clips, and <em>the odd mishap.</em></h2>
+          <p class="chapter-body">Robots fall over. Life takes different turns. It's part of the process. Here's the visual record : Fun moments, technical visits, and the people that makes life worth living.</p>
+          <a class="chapter-cta" href="media.html">Watch &amp; browse →</a>
+        </div>
+      </section>
+
+      <section class="chapter" id="ch-resume" data-bubble="Want the paper trail? It's all here, properly documented." data-orbit="18deg 62deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 05 — The Paper Trail</p>
+          <h2 class="chapter-title">The <em>formal</em><br>version of this story.</h2>
+          <p class="chapter-body">Education, experience, and the credentials that don't fit neatly into a scrolling narrative. Everything above, condensed into one page.</p>
+          <a class="chapter-cta" href="resume.html">View the resume →</a>
+        </div>
+      </section>
+
+      <section class="chapter" id="ch-contact" data-bubble="That's the tour! Fancy saying hello for real?" data-orbit="0deg 76deg 105%">
+        <div class="chapter-inner">
+          <p class="chapter-index">Chapter 06 — Your Turn</p>
+          <h2 class="chapter-title">Open to <em>research</em><br>collaborations &amp; projects.</h2>
+          <p class="chapter-body">That's the whole tour. If any of this sparked an idea, or you just want to talk legged robots and reinforcement learning - Akshat's listening, and so am I.</p>
+          <a class="chapter-cta" href="contact.html">Get in touch →</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ============= FOOTER ============= -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-name">Let's build something<br>that moves.</div>
+      <div class="footer-links">
+       <a href="https://mail.google.com/mail/?view=cm&fs=1&to=akshatshrinate2002@gmail.com" target="_blank">
+    ✎ Email
+</a><a href="https://www.linkedin.com/in/akshat-shrinate-/" target="_blank" rel="noopener">in&nbsp; LinkedIn</a>
+        <a href="https://github.com/AkshatShrinate/" target="_blank" rel="noopener">git&nbsp; GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Akshat Shrinate . Robotics · Embedded Systems · Machine Learning</span>
+      <span>© 2026 · Guided by Hope</span>
+    </div>
+  </footer>
+
+<script>
+  // ---- Model load / fallback ----
+  const viewer = document.getElementById('hope');
+  const fallback = document.getElementById('modelFallback');
+  const bubble = document.getElementById('bubble');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (viewer) {
+    viewer.addEventListener('error', () => {
+      viewer.style.display = 'none';
+      fallback.style.display = 'flex';
+    });
+
+    viewer.addEventListener('load', () => {
+      const names = viewer.availableAnimations || [];
+      if (names.length) {
+        viewer.animationName = names[0];
+        viewer.play({ repetitions: 1 });
+      }
+    });
+  }
+
+  // ---- Chapters: fade in on view, drive Hope's bubble + camera ----
+  const chapters = document.querySelectorAll('.chapter');
+  const railButtons = document.querySelectorAll('.rail button');
+
+  const waveHope = () => {
+    if (!viewer || !viewer.availableAnimations || !viewer.availableAnimations.length) return;
+    viewer.currentTime = 0;
+    viewer.play({ repetitions: 1 });
+  };
+
+  const chapterObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const el = entry.target;
+      if (entry.isIntersecting) {
+        el.classList.add('in-view');
+
+        // Update Hope's speech bubble
+        const text = el.getAttribute('data-bubble');
+        if (bubble && text) {
+          bubble.classList.remove('visible');
+          setTimeout(() => {
+            bubble.innerHTML = '<span class="bubble-name">Hope</span>' + text;
+            bubble.classList.add('visible');
+          }, 180);
+        }
+
+        // Turn Hope to "face" this chapter
+        const orbit = el.getAttribute('data-orbit');
+        if (viewer && orbit) viewer.cameraOrbit = orbit;
+
+        // A little wave whenever a new chapter arrives
+        waveHope();
+
+        // Highlight matching rail dot
+        railButtons.forEach((b) => {
+          b.classList.toggle('active', b.dataset.target === el.id);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  amp = chapters.forEach((c) => chapterObserver.observe(c));
+
+  // ---- Rail navigation ----
+  railButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (target) target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>

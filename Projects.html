@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akshat Shrinate</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Three.js and GLTFLoader for the 3D Wheel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+
+    <style>
+        :root {
+            --dark-pjm: #679cbc;
+            --dark-2-pjm: #5483a0;
+            --cream-pjm: #fef1d5;
+            --cream-2-pjm: #ecdcb9;
+            
+            /* Desktop Viewport Layout Tokens */
+            --wheel-width: 130vw;
+            --wheel-height: 125vw;
+            --wheel-top: 60%;
+            --wheel-left:80vw;
+            --wheel-translate-y: -50%;
+            --wheel-translate-x: 0px;
+            
+            --card-width: min(34vw, 440px);
+            --card-height: min(38vh, 340px);
+            --card-left: -760px;
+            --card-origin-x: calc(62.5vw + 760px);
+            --card-top: calc(50% - (var(--card-height) / 2));
+            
+            --pane-left: 6vw;
+            --pane-top: 32vh;
+            --pane-width: 38vw;
+            
+            /* LAPTOP / DESKTOP VIEW GRADIENT TOKENS */
+            --mask-radius: 65vw;       /* MANUALLY CHANGE THIS TO ADJUST DESKTOP RADIUS SIZE */
+            --mask-center-x: 120vw;
+            --mask-center-y: 55vh;     /* MANUALLY CHANGE THIS TO ADJUST DESKTOP VERTICAL ORIENTATION */
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: var(--cream-pjm);
+        }
+
+        #stage-pjm-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        #bg-canvas-layer {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, var(--cream-pjm), var(--cream-2-pjm));
+            z-index: 1;
+        }
+
+        #bg-circular-mask-blue {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, var(--dark-pjm), var(--dark-2-pjm));
+            mask: radial-gradient(circle at var(--mask-center-x) var(--mask-center-y), #000 var(--mask-radius), transparent calc(var(--mask-radius) + 0.2vw));
+            -webkit-mask: radial-gradient(circle at var(--mask-center-x) var(--mask-center-y), #000 var(--mask-radius), transparent calc(var(--mask-radius) + 0.2vw));
+            z-index: 2;
+            pointer-events: none;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #left-text-canvas-pane {
+            position: absolute;
+            left: var(--pane-left);
+            top: var(--pane-top);
+            width: var(--pane-width);
+            z-index: 15;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
+        }
+
+        .dynamic-year-header {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(40px, 5.5vw, 84px);
+            font-weight: 400;
+            color: #1a202c;
+            margin: 0 0 12px 0;
+            line-height: 1.1;
+            width: 100%;
+        }
+
+        .dynamic-role-subheader {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(11px, 1.2vw, 15px);
+            font-weight: 600;
+            color: #b34433;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 20px 0;
+            line-height: 1.4;
+            width: 100%;
+            word-wrap: break-word; 
+        }
+
+        .wheel-interaction-hint {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: clamp(9px, 1vw, 11px);
+            font-weight: 500;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #wheel-system-container {
+            position: absolute;
+            left: var(--wheel-left); 
+            top: var(--wheel-top);
+            transform: translateY(var(--wheel-translate-y)) translateX(var(--wheel-translate-x));
+            width: var(--wheel-width);
+            height: var(--wheel-height);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #vinyl-scanner-wheel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform;
+            z-index: 6;
+        }
+
+        #vinyl-scanner-wheel:active {
+            cursor: grabbing;
+        }
+
+        #vinyl-scanner-wheel canvas {
+            outline: none;
+            pointer-events: none;
+        }
+
+        #nodes-injection-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .timeline-image-card {
+            position: absolute;
+            left: var(--card-left); 
+            top: var(--card-top);
+            width: var(--card-width); 
+            height: var(--card-height);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+            background: #1a1a1a;
+            cursor: pointer;
+            pointer-events: auto;
+            transform-origin: var(--card-origin-x) calc(var(--card-height) / 2);
+            transition: opacity 0.5s, filter 0.5s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+            will-change: transform, opacity;
+            z-index: 25;
+        }
+
+        .timeline-image-card .card-inner-rigid-frame {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            will-change: transform;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .timeline-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .timeline-image-card.stack-behind {
+            transform: scale(0.85) !important;
+            opacity: 0 !important;
+            filter: blur(10px) !important;
+            pointer-events: none;
+            visibility: hidden !important;
+        }
+
+        .timeline-image-card.active-focus {
+            z-index: 500;
+            filter: blur(0px) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        body.terminal-active .timeline-image-card.active-focus {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: opacity 0.15s ease, visibility 0.15s;
+        }
+
+        /* --- TABLET BREAKPOINT --- */
+        @media (max-width: 1024px) {
+            :root {
+                --wheel-width: 160vw;
+                --wheel-height: 160vw;
+                --wheel-left: 80vw;
+                --card-width: min(38vw, 360px);
+                --card-height: min(30vh, 260px);
+                --card-left: -680px;
+                --card-origin-x: calc(58vw + 680px);
+                --pane-left: 6vw;
+                --pane-top: 32vh;
+                --pane-width: 44vw;
+                --mask-radius: 96vw;
+                --mask-center-x: 120vw;
+            }
+            body.terminal-active #wheel-system-container { transform: translateY(-50%) translateX(45vw); }
+            body.terminal-active #bg-circular-mask-blue { transform: translateX(45vw); }
+            body.terminal-active #left-text-canvas-pane { transform: translateX(-50vw); opacity: 0; }
+        }
+
+        /* --- MOBILE BREAKPOINT (Text Top, Images Center, Wheel Bottom) --- */
+        @media (max-width: 767px) {
+            :root {
+                --wheel-width: 280vw;
+                --wheel-height: 280vw;
+                --wheel-top: calc(88vh - 50vw); 
+                
+                --wheel-left: 50%;
+                --wheel-translate-y: 0px;
+                --wheel-translate-x: -50%;
+                
+                --card-width: 80vw;
+                --card-height: min(28vh, 250px);
+                --card-left: calc(50% - (var(--card-width) / 2));
+                
+                --card-top: -20vh; 
+                --card-origin-x: calc(var(--card-width) / 2);
+                
+                --pane-left: 0px;
+                --pane-top: 14vh; 
+                --pane-width: 100vw;
+                
+                /* MOBILE VIEW GRADIENT TOKENS */
+                --mask-radius: 130vw;       /* MANUALLY CHANGE THIS TO ADJUST MOBILE RADIUS SIZE */
+                --mask-center-x: 50%;
+                --mask-center-y: 130vh;     /* MANUALLY CHANGE THIS TO ADJUST MOBILE VERTICAL ORIENTATION */
+            }
+
+            #left-text-canvas-pane {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 0 20px;
+                z-index: 30;
+            }
+
+            .timeline-image-card {
+                transform-origin: calc(var(--card-width) / 2) 46vh;
+                z-index: 40;
+            }
+
+            body.terminal-active #wheel-system-container {
+                transform: translateX(-50%) translateY(45vh);
+            }
+            body.terminal-active #bg-circular-mask-blue {
+                transform: translateY(45vh);
+            }
+            body.terminal-active #left-text-canvas-pane {
+                transform: translateY(-30vh);
+                opacity: 0;
+            }
+            body.terminal-active .timeline-image-card.active-focus {
+                transform: translate(0px, -20vh) scale(1.05) !important;
+            }
+        }
+
+        /* Desktop Layout Class Helpers */
+        body.desktop-layout.terminal-active #wheel-system-container { transform: translateY(-50%) translateX(35vw); }
+        body.desktop-layout.terminal-active #bg-circular-mask-blue { transform: translateX(35vw); }
+        body.desktop-layout.terminal-active #left-text-canvas-pane { transform: translateX(-40vw); opacity: 0; }
+        body.desktop-layout.terminal-active .timeline-image-card.active-focus { transform: translate(-45vw, 0px) scale(1.1) !important; }
+        body.desktop-layout.terminal-active .timeline-image-card.active-focus .card-inner-rigid-frame { transform: rotate(0deg) !important; }
+
+        /* Article Workspace Modal Drawer */
+        #terminal-info-panel {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -95vh;
+            width: 92vw;
+            max-width: 1400px;
+            height: 85vh;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 24px 24px 0 0;
+            z-index: 800;
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.12);
+            padding: clamp(20px, 4vw, 40px) clamp(20px, 4vw, 50px);
+            display: flex;
+            flex-direction: column;
+            transition: bottom 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        body.terminal-active #terminal-info-panel {
+            bottom: 0;
+        }
+
+        .term-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            flex-shrink: 0;
+        }
+
+        .term-header-container .term-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #718096;
+        }
+
+        .term-body-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .term-top-media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .term-top-media-grid.items-count-1 {
+            grid-template-columns: minmax(280px, 600px);
+            justify-content: center;
+        }
+
+        .media-figure-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 0;
+            width: 100%;
+        }
+
+        .term-showcase-img,
+        .term-showcase-video {
+            width: 100%;
+            height: min(28vh, 320px);
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            display: block;
+        }
+
+        .term-media-caption {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            color: #718096;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-bottom-text-pane {
+            width: 100%;
+            font-family: 'Newsreader', serif;
+            font-size: clamp(17px, 2.2vw, 21px);
+            line-height: 1.6;
+            color: #1a202c;
+            padding-bottom: 20px;
+        }
+
+        .back-workspace-btn {
+            background: transparent;
+            border: 1px solid #1a202c;
+            color: #1a202c;
+            padding: 8px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .back-workspace-btn:hover {
+            background: #1a202c;
+            color: #ffffff;
+        }
+
+        #bow-animation-container {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: min(220px, 28vw); 
+            height: min(260px, 32vh);
+            z-index: 22;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 767px) {
+            #bow-animation-container {
+                display: none; 
+            }
+        }
+    </style>
+</head>
+<body class="body-pjm-viewport">
+    <script src="navbar.js"></script>
+
+    <div id="stage-pjm-wrapper">
+        <div id="bg-canvas-layer"></div>
+        <div id="bg-circular-mask-blue"></div>
+
+        <!-- Dynamic Information Pane -->
+        <div id="left-text-canvas-pane">
+            <h1 class="dynamic-year-header" id="text-year-node">2026</h1>
+            <p class="dynamic-role-subheader" id="text-role-node">IIT JODHPUR, INDIA</p>
+            <div class="wheel-interaction-hint">
+                <span id="hint-arrow">←</span> click on the wheel and rotate
+            </div>
+        </div>
+
+        <!-- Secondary Corner Art Object Placeholder -->
+        <div id="bow-animation-container"></div>
+
+        <div id="wheel-system-container">
+            <div id="vinyl-scanner-wheel"></div>
+            <div id="nodes-injection-layer"></div>
+        </div>
+
+        <!-- Detailed Project Overlay Drawer -->
+        <div id="terminal-info-panel">
+            <div class="term-header-container">
+                <span class="term-title" id="term-meta-title-node">ARTICLE</span>
+                <button class="back-workspace-btn" onclick="closeWorkspaceTerminal()">← Back</button>
+            </div>
+            <div class="term-body-content" id="terminal-injection-destination"></div>
+        </div>
+    </div>
+
+    <script>
+        const originalDataset = [
+            {
+                year: "2026",
+                role: "Gait Patterns in PIKA Quadruped",
+                image: "assets/pika.jpg",
+                mediaAssets: [
+                    { type: 'image', src: 'assets/pika.jpg', alt: 'Walk Gait Analysis', caption: 'Fig 1.1: Walk Cycle Trajectory Generation' },
+                    { type: 'image', src: 'assets/pika_2.jpg', alt: 'Trot Gait Testing', caption: 'Fig 1.2: Trot Phase Real-World Hardware Verification' },
+                    { type: 'video', src: 'assets/pika_0.mp4', caption: 'Video 1.3: Python Implementation of Gait Control' },
+                    { type: 'video', src: 'assets/pika_demo.mp4', caption: 'Video 1.4: Locomotion Transition Demonstration' }
+                ],
+                textContent: `
+                    <b>Skills and Softwares used: Python, Fusion 360, Forward and Inverse Kinematics (basics), Embedded Systems, 3D Printing</b><br><br>
+                    Implemented and validated bio-inspired gait trajectories for the 12-DOF PIKA quadruped robot by reproducing the locomotion framework presented in the paper <i>"Bio-Inspired Trajectory Generation for Quadruped Robots"</i>. The published joint-angle trajectories were integrated into the robot to execute five distinct gait patterns—Walk, Trot, Canter, Transverse Gallop, and Rotary Gallop—for real-world hardware evaluation. While the original framework provided mathematical equations to generate gait cycles, this implementation focused on deploying and experimentally validating the individual gait cycles on the physical quadruped platform, demonstrating stable and repeatable locomotion across multiple gait modes.
+                `
+            },
+            {
+                year: "2025",
+                role: "TSA-actuated Robotic Hand",
+                image: "assets/tsaber_1.jpg",
+                mediaAssets: [
+                    { type: 'image', src: 'assets/tsaber_1.jpg', alt: 'TSA Mechanism', caption: 'Fig 2.1: Robotic Arm Grasping Configurations' }
+                ],
+                textContent: `
+                    <b>Skills and Softwares used: Python, ROS2, VS Code, Neural Networks, Fusion 360, 3D Printing</b><br><br>
+                   Patent Pending with Application Number: 202611086086. 
+                `
+            },
+            {
+                year: "2025",
+                role: "Voice-controlled Prosthetic Arm",
+                image: "assets/pros.png",
+                mediaAssets: [
+                    { type: 'image', src: 'assets/pros.png', alt: 'Prosthetic Arm Frame', caption: 'Fig 3.1: Testing with an Amputee Patient' }
+                ],
+                textContent: `
+                    <b> Skills and Softwares used: Arduino IDE, Platform IO</b><br><br>
+Developed an EMG- and voice-controlled prosthetic arm in collaboration with <b>Jaipur Foot</b>, the world's largest organization providing prosthetic limbs to people with disabilities. The system enables users to operate the prosthetic hand through either EMG muscle-signal threshold detection or voice commands, allowing intuitive opening and closing of the hand. By offering multiple control modalities, the design improves accessibility, ease of use, and everyday functionality for upper-limb amputees. `
+            },
+            {
+                year: "2025",
+                role: "Detachable PowerDrive System",
+                image: "assets/chair.png",
+                mediaAssets: [
+                { type: 'image', src: 'assets/chair.png', alt: 'PowerDrive Structural Base', caption: 'Fig 4.1: Attached Configuration' },
+                     { type: 'image', src: 'assets/wheel_ros.png', alt: 'ROS 2 Integration', caption: 'Fig 1.2: Integration with ROS 2' },
+                    { type: 'video', src: 'assets/wheelchair.mp4', caption: 'Video 4.3: Locomotion Demonstration' },
+                     { type: 'video', src: 'assets/pwd.mp4', caption: 'Video 4.4: App based Control Testing with ROS 2' }
+                ],
+                textContent: `
+                    <b>Skills and Softwares used: Python, ROS 2, Gazebo, Linux </b><br><br>
+Designed and developed a detachable PowerDrive system that can be retrofitted onto conventional manual wheelchairs, transforming them into powered mobility devices for elderly users, patients, and people with disabilities. The modular attachment can be quickly installed or removed, reducing the overall weight compared to conventional electric wheelchairs while improving portability and ease of transport. The system supports multiple control modes, including joystick-based and mobile app-based operation, providing flexible user interaction. To validate the design before hardware deployment, the complete wheelchair model was integrated with ROS 2 and Gazebo, enabling simulation, kinematic testing, and autonomous navigation experiments in a virtual environment prior to real-world implementation.                `
+            },
+            {
+                year: "2024",
+                role: "Robo-View: Kinematics Visualizer",
+                image: "assets/roboview.png",
+                mediaAssets: [
+                    { type: 'image', src: 'assets/roboview.png', alt: 'Visualizer Interface', caption: 'Fig 5.1: Real-time Coordinate Transform Engine' },
+                    { type: 'video', src: 'assets/roro.mp4', caption: 'Video 5.2: Initial Web-site Testing' }
+                ],
+                textContent: `
+                    <b>Skills and Softwares used: HTML, CSS, JavaScript, Three.js, Node.js</b><br><br>
+
+Developed <b>Robo-View</b>, an open-source web-based URDF visualizer that enables users to import robotic models in URDF format and interactively explore their kinematic behavior. The platform provides manual joint controllers for manipulating individual joints in real time, allowing users to visualize robot motion, inspect link transformations, and understand the robot's reachable configurations and configuration space. By bringing URDF visualization to the browser, Robo-View offers a lightweight alternative for quickly analyzing robotic kinematics without requiring expertise in desktop simulation tools such as ROS 2 and Rviz `
+            },
+            {
+                year: "2024",
+                role: "Object Detection & Tracking System",
+                image: "assets/foot.jpg",
+                mediaAssets: [
+                    { type: 'image', src: 'assets/foot.jpg', alt: 'Convolutional Identification Output', caption: 'Fig 6.1: A frame from the Output feed' }
+                    
+                ],
+                textContent: `
+                    <b>Skills and Softwares used: Python, YOLOv11, OpenCV</b><br><br>
+This project focuses on identifying and tracking players in a football match using a combination of deep learning-based object detection and player re-identification techniques. Leveraging YOLOv11 for real-time object detection, the system accurately identifies players in each frame of a match video, while a custom team-color classifier helps associate each player with their team (red, white, or yellow jerseys). This allows the system to display individual IDs, team affiliations, and track player movements consistently across frames.
+<br>
+To maintain robust tracking, the project integrates the BoT-SORT (Better Object Tracking with Strong ReID) framework, enabling smooth re-identification even in the presence of occlusions or fast movements. Additionally, the project includes a real-time tactical map that visualizes player positions on the field using live positional data. The system outputs an annotated video along with this tactical view, making it a powerful tool for sports analytics and visual review.                `
+            }
+        ];
+
+        let scene, camera, renderer, tyreModel;
+        let currentRotationAngle = 0; 
+        let isPanelTargetOpen = false;
+        let isDragging = false;
+        let dragStartAngle = 0;
+        let baseAngleOnDragStart = 0;
+
+        let bowScene, bowCamera, bowRenderer, bowMixer;
+        const clock = new THREE.Clock();
+
+        const wheel = document.getElementById('vinyl-scanner-wheel');
+        const injectionLayer = document.getElementById('nodes-injection-layer');
+        const textYearNode = document.getElementById('text-year-node');
+        const textRoleNode = document.getElementById('text-role-node');
+        const bowContainer = document.getElementById('bow-animation-container');
+        const hintArrow = document.getElementById('hint-arrow');
+        
+        let activeClusterIndex = originalDataset.length - 1; 
+        const itemSpacingArcDegree = 18; 
+        const dragVelocityMultiplier = 4.5;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTickSound() {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(950, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch(e) {}
+        }
+
+        function checkLayoutState() {
+            if (window.innerWidth >= 768) {
+                document.body.classList.add('desktop-layout');
+                if(hintArrow) hintArrow.textContent = '←';
+            } else {
+                document.body.classList.remove('desktop-layout');
+                if(hintArrow) hintArrow.textContent = '↓';
+            }
+        }
+
+        window.onload = function() {
+            checkLayoutState();
+            
+            // WebGL Core Scene Init
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, wheel.clientWidth / wheel.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(wheel.clientWidth, wheel.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            wheel.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            const loader = new THREE.GLTFLoader();
+            loader.load('assets/wheel.glb', function(gltf) {
+                tyreModel = gltf.scene;
+                const box = new THREE.Box3().setFromObject(tyreModel);
+                const center = box.getCenter(new THREE.Vector3());
+                tyreModel.position.x += (tyreModel.position.x - center.x);
+                tyreModel.position.y += (tyreModel.position.y - center.y);
+                tyreModel.position.z += (tyreModel.position.z - center.z);
+                
+                tyreModel.scale.set(6.0, 6.0, 6.0); 
+                
+                scene.add(tyreModel);
+                tyreModel.rotation.z = -currentRotationAngle * (Math.PI / 180);
+            }, undefined, function(error) {
+                console.error('Error loading the wheel file:', error);
+            });
+
+            camera.position.z = window.innerWidth < 767 ? 4.9 : 3.5;
+
+            initBowModelLayout();
+            initInterfaceLayout();
+            animate();
+        };
+
+        function initBowModelLayout() {
+            if (!bowContainer || window.innerWidth < 767) return;
+            bowScene = new THREE.Scene();
+            bowCamera = new THREE.PerspectiveCamera(45, bowContainer.clientWidth / bowContainer.clientHeight, 0.1, 1000);
+            bowCamera.position.set(0, 0, 3);
+
+            bowRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            bowRenderer.setSize(bowContainer.clientWidth, bowContainer.clientHeight);
+            bowRenderer.setPixelRatio(window.devicePixelRatio);
+            bowContainer.appendChild(bowRenderer.domElement);
+
+            const lightA = new THREE.AmbientLight(0xffffff, 1.0);
+            bowScene.add(lightA);
+            const lightD = new THREE.DirectionalLight(0xffffff, 1.2);
+            lightD.position.set(2, 4, 3);
+            bowScene.add(lightD);
+
+            const loader = new THREE.GLTFLoader();
+            loader.load('assets/bow.glb', function(gltf) {
+                const model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.x = -center.x;
+                model.position.y = -center.y-1.0;
+                model.position.z = -center.z;
+                
+                model.scale.set(0.230, 0.230, 0.230); 
+                bowScene.add(model);
+
+                if (gltf.animations && gltf.animations.length > 0) {
+                    bowMixer = new THREE.AnimationMixer(model);
+                    const action = bowMixer.clipAction(gltf.animations[0]);
+                    action.play();
+                }
+            }, undefined, function(error) {
+                console.error('Error loading secondary element:', error);
+            });
+        }
+
+        function initInterfaceLayout() {
+            injectionLayer.innerHTML = '';
+            originalDataset.forEach((data, index) => {
+                const node = document.createElement('div');
+                node.className = 'timeline-image-card';
+                node.id = `img-card-${index}`;
+                node.innerHTML = `
+                    <div class="card-inner-rigid-frame" id="card-inner-${index}">
+                        <img src="${data.image}" alt="Archive node layout" draggable="false">
+                    </div>
+                `;
+                node.addEventListener('click', () => triggerNodeFocusActivation(index));
+                injectionLayer.appendChild(node);
+            });
+            updateCalculatedPositions();
+        }
+
+        function updateCalculatedPositions() {
+            const isMobile = window.innerWidth < 767;
+            if (tyreModel) {
+                tyreModel.rotation.z = -currentRotationAngle * (Math.PI / 180);
+            }
+
+            const totalItems = originalDataset.length;
+            const period = totalItems * itemSpacingArcDegree;
+
+            originalDataset.forEach((_, index) => {
+                const node = document.getElementById(`img-card-${index}`);
+                const innerFrame = document.getElementById('card-inner-' + index);
+                if (!node || !innerFrame) return;
+
+                if (isPanelTargetOpen) {
+                    if (index !== activeClusterIndex) {
+                        node.className = 'timeline-image-card stack-behind';
+                    } else {
+                        node.className = 'timeline-image-card active-focus';
+                    }
+                    return;
+                }
+
+                let baseNodeAngle = (index * itemSpacingArcDegree) + currentRotationAngle;
+                let normalizedAngle = ((baseNodeAngle + period / 2) % period);
+                if (normalizedAngle < 0) normalizedAngle += period;
+                normalizedAngle -= period / 2;
+
+                node.className = 'timeline-image-card';
+                let distanceToCenterAxis = Math.abs(normalizedAngle);
+
+                if (distanceToCenterAxis < (itemSpacingArcDegree / 2)) {
+                    node.classList.add('active-focus');
+                    if (activeClusterIndex !== index) {
+                        activeClusterIndex = index;
+                        const activeData = originalDataset[activeClusterIndex];
+                        textYearNode.textContent = activeData.year;
+                        textRoleNode.textContent = activeData.role;
+                    }
+                    
+                    node.style.visibility = "visible";
+                    node.style.pointerEvents = "auto";
+                    node.style.opacity = "1";
+                    node.style.filter = "blur(0px)";
+                    node.style.transform = `rotate(${normalizedAngle}deg) translate(0, 0) scale(1)`;
+                    innerFrame.style.transform = `rotate(${-normalizedAngle}deg)`;
+                } else if (distanceToCenterAxis < (itemSpacingArcDegree * 1.5)) {
+                    node.style.visibility = "visible";
+                    node.style.pointerEvents = "auto";
+                    node.style.opacity = "0.5"; 
+                    node.style.filter = "blur(1.5px)";
+                    
+                    let previewScale = isMobile ? 0.76 : 0.84;
+                    node.style.transform = `rotate(${normalizedAngle}deg) translate(0, 0) scale(${previewScale})`;
+                    innerFrame.style.transform = `rotate(${-normalizedAngle}deg)`;
+                } else {
+                    node.style.visibility = "hidden";
+                    node.style.pointerEvents = "none";
+                    node.style.opacity = "0";
+                    node.style.filter = "blur(10px)";
+                    node.style.transform = `rotate(${normalizedAngle}deg) translate(0, 0) scale(0.6)`;
+                }
+            });
+        }
+
+        function getAngleFromEvent(e) {
+            const rect = wheel.getBoundingClientRect();
+            const centerPointX = rect.left + rect.width / 2;
+            const centerPointY = rect.top + rect.height / 2;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            return Math.atan2(clientY - centerPointY, clientX - centerPointX) * (180 / Math.PI);
+        }
+
+        wheel.addEventListener('mousedown', (e) => {
+            if (isPanelTargetOpen) return;
+            isDragging = true;
+            dragStartAngle = getAngleFromEvent(e);
+            baseAngleOnDragStart = currentRotationAngle;
+            e.preventDefault();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || isPanelTargetOpen) return;
+            const currentEventAngle = getAngleFromEvent(e);
+            const deltaAngle = currentEventAngle - dragStartAngle;
+            let lastTrackIndex = activeClusterIndex;
+            currentRotationAngle = baseAngleOnDragStart + (deltaAngle * dragVelocityMultiplier);
+            updateCalculatedPositions();
+            if (activeClusterIndex !== lastTrackIndex) {
+                playTickSound();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const snapAngle = Math.round(currentRotationAngle / itemSpacingArcDegree) * itemSpacingArcDegree;
+            currentRotationAngle = snapAngle;
+            updateCalculatedPositions();
+        });
+
+        wheel.addEventListener('touchstart', (e) => {
+            if (isPanelTargetOpen) return;
+            isDragging = true;
+            dragStartAngle = getAngleFromEvent(e);
+            baseAngleOnDragStart = currentRotationAngle;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || isPanelTargetOpen) return;
+            const currentEventAngle = getAngleFromEvent(e);
+            const deltaAngle = currentEventAngle - dragStartAngle;
+            let lastTrackIndex = activeClusterIndex;
+            currentRotationAngle = baseAngleOnDragStart + (deltaAngle * dragVelocityMultiplier);
+            updateCalculatedPositions();
+            if (activeClusterIndex !== lastTrackIndex) {
+                playTickSound();
+            }
+        });
+
+        window.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const snapAngle = Math.round(currentRotationAngle / itemSpacingArcDegree) * itemSpacingArcDegree;
+            currentRotationAngle = snapAngle;
+            updateCalculatedPositions();
+        });
+
+        function triggerNodeFocusActivation(selectedIndex) {
+            if (isPanelTargetOpen) return;
+            const period = originalDataset.length * itemSpacingArcDegree;
+            let currentCardAngle = (selectedIndex * itemSpacingArcDegree) + currentRotationAngle;
+            let normalizedCardAngle = ((currentCardAngle + period / 2) % period);
+            if (normalizedCardAngle < 0) normalizedCardAngle += period;
+            normalizedCardAngle -= period / 2;
+            
+            currentRotationAngle -= normalizedCardAngle;
+            activeClusterIndex = selectedIndex;
+            playTickSound();
+
+            isPanelTargetOpen = true;
+            document.body.classList.add('terminal-active');
+            
+            const content = originalDataset[activeClusterIndex];
+            document.getElementById('term-meta-title-node').textContent = `${content.role}`;
+
+            let dynamicMediaHTML = '';
+            if(content.mediaAssets && content.mediaAssets.length > 0) {
+                content.mediaAssets.forEach(asset => {
+                    dynamicMediaHTML += `<figure class="media-figure-wrapper">`;
+                    if(asset.type === 'image') {
+                        dynamicMediaHTML += `<img src="${asset.src}" class="term-showcase-img" alt="${asset.alt || 'Visual Element'}">`;
+                    } else if(asset.type === 'video') {
+                        dynamicMediaHTML += `
+                            <video class="term-showcase-video" controls muted playsinline>
+                                <source src="${asset.src}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                    }
+                    dynamicMediaHTML += `<figcaption class="term-media-caption">${asset.caption || 'Project Showcase Node'}</figcaption></figure>`;
+                });
+            }
+
+            let layoutModifierClass = '';
+            if (content.mediaAssets.length === 1) layoutModifierClass = ' items-count-1';
+
+            const structuralOutputHTML = `
+                <div class="term-top-media-grid${layoutModifierClass}">
+                    ${dynamicMediaHTML}
+                </div>
+                <div class="term-bottom-text-pane">
+                    ${content.textContent}
+                </div>
+            `;
+            
+            document.getElementById('terminal-injection-destination').innerHTML = structuralOutputHTML;
+            updateCalculatedPositions();
+        }
+
+        function closeWorkspaceTerminal() {
+            isPanelTargetOpen = false;
+            document.body.classList.remove('terminal-active');
+            updateCalculatedPositions();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+            const delta = clock.getDelta();
+            if (bowMixer) {
+                bowMixer.update(delta);
+            }
+            if (bowRenderer && bowScene && bowCamera) {
+                bowRenderer.render(bowScene, bowCamera);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            checkLayoutState();
+            if (camera && renderer && wheel) {
+                camera.aspect = wheel.clientWidth / wheel.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(wheel.clientWidth, wheel.clientHeight);
+                camera.position.z = window.innerWidth < 767 ? 4.9 : 3.5;
+            }
+            if (bowCamera && bowRenderer && bowContainer) {
+                bowCamera.aspect = bowContainer.clientWidth / bowContainer.clientHeight;
+                bowCamera.updateProjectionMatrix();
+                bowRenderer.setSize(bowContainer.clientWidth, bowContainer.clientHeight);
+            }
+            updateCalculatedPositions();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{
+    "settings": {
+        "displayDuration": 7000,
+        "animationDuration": 250,
+        "animationType": "fade",
+        "renotifyIntervalMs": 30000,
+        "stopRenotifyOnRead": true
+    },
+    "passive_triggers": [
+        {
+            "target": "resume.pdf",
+            "setVar": "seenResume=true"
+        },
+        {
+            "target": "zeta [2021-2026]",
+            "setVar": "visitedZeta=true"
+        },
+        {
+            "target": "lottiemon",
+            "setVar": "visitedLottiemon=true"
+        },
+        {
+            "target": "motion design",
+            "setVar": "visitedMotion=true"
+        }
+    ],
+    "variables": {
+        "seenResume": false,
+        "visitedZeta": false,
+        "visitedLottiemon": false,
+        "visitedMotion": false,
+        "visitedSideProjects": false,
+        "visitedFunStuff": false
+    },
+    "nudges": [
+        {
+            "id": "resume_seen_nudge",
+            "trigger": "layout_closed",
+            "targetId": "resume",
+            "ignoreFocusMode": true,
+            "condition": "seenResume == true && visitedZeta == false",
+            "title": "Resume",
+            "message": "Oh so you looked at my resume!!",
+            "chatText": "Oh so you looked at my resume!! I hope you liked what you saw.",
+            "delay": 2000,
+            "repeat": false
+        },
+        {
+            "id": "startup_greeting",
+            "trigger": "startup",
+            "delay": 4500,
+            "type": "rich",
+            "title": "Welcome!",
+            "message": "Hi there! Ishant here, glad to have you here :)",
+            "chatText": "Feel free to wander around on your own — but if you'd like a little guided tour, here are the first things I'd love to show you 👇",
+            "renotify": true,
+            "renotifyIntervalMs": 90000,
+            "resurface": {
+                "chatText": "Still exploring? Continue where you left off 👇"
+            },
+            "actions": [
+                {
+                    "label": "Building Zapp Account",
+                    "icon": "folder",
+                    "type": "open_path",
+                    "target": "my_computer/work/zeta/zapp account",
+                    "setVar": "visitedZeta = true"
+                },
+                {
+                    "label": "Lottiemon",
+                    "icon": "folder",
+                    "type": "open_path",
+                    "target": "my_computer/work/zeta/lottiemon",
+                    "setVar": "visitedLottiemon = true"
+                },
+                {
+                    "label": "Motion Design Guidelines",
+                    "icon": "folder",
+                    "type": "open_path",
+                    "target": "my_computer/work/zeta/motion guidelines",
+                    "setVar": "visitedMotion = true"
+                }
+            ]
+        },
+        {
+            "id": "completion_nudge",
+            "trigger": "condition",
+            "condition": "visitedZeta && visitedLottiemon && visitedMotion",
+            "delay": 2000,
+            "type": "rich",
+            "title": "A Message",
+            "message": "Sent you a message",
+            "chatText": "Okay, you've seen my 'serious' picks. Curious what I do for fun? Two more for the road 👇",
+            "renotify": true,
+            "renotifyIntervalMs": 90000,
+            "resurface": {
+                "chatText": "Ready to pick up where you left off? More to see 👇"
+            },
+            "actions": [
+                {
+                    "label": "My Side Projects",
+                    "icon": "folder",
+                    "type": "open_path",
+                    "target": "my_computer/side projects",
+                    "setVar": "visitedSideProjects = true"
+                },
+                {
+                    "label": "Fun Stuff I Made",
+                    "icon": "folder",
+                    "type": "open_path",
+                    "target": "my_computer/fun",
+                    "setVar": "visitedFunStuff = true"
+                }
+            ]
+        }
+    ]
+}

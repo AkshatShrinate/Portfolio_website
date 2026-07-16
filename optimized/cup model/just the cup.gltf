@@ -1,0 +1,483 @@
+{
+  "asset": {
+    "generator": "glTF-Transform v4.3.0",
+    "version": "2.0"
+  },
+  "accessors": [
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 246
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 92,
+      "max": [
+        0.5290513038635254,
+        1.120602011680603,
+        0.6404094696044922
+      ],
+      "min": [
+        -0.18993043899536133,
+        0.29515495896339417,
+        0.3587493896484375
+      ]
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 92
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 92
+    },
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 78
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 28,
+      "max": [
+        0.5290513038635254,
+        1.120602011680603,
+        0.6404094696044922
+      ],
+      "min": [
+        -0.18993043899536133,
+        0.29515495896339417,
+        0.36090290546417236
+      ]
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 28
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 28
+    },
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 39450
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 8431,
+      "max": [
+        0.9334712028503418,
+        1.3338394165039062,
+        0.6365513801574707
+      ],
+      "min": [
+        -0.6364278793334961,
+        0,
+        -0.7912637591362
+      ]
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 8431
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 8431
+    },
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 372
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 192,
+      "max": [
+        0.5515851974487305,
+        0.9823206067085266,
+        0.5594745874404907
+      ],
+      "min": [
+        -0.5590286254882812,
+        0.19300155341625214,
+        -0.5511390566825867
+      ]
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 192
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 192
+    },
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 6
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 4,
+      "max": [
+        1.98782217502594,
+        0,
+        1.9205750226974487
+      ],
+      "min": [
+        -1.98782217502594,
+        0,
+        -1.9205750226974487
+      ]
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 4
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 4
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 571
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 571,
+      "byteLength": 300
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 871,
+      "byteLength": 41292
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 42163,
+      "byteLength": 908
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 43071,
+      "byteLength": 181
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 33071,
+      "wrapT": 33071
+    },
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "extensions": {
+        "KHR_texture_basisu": {
+          "source": 0
+        }
+      }
+    },
+    {
+      "sampler": 1,
+      "extensions": {
+        "KHR_texture_basisu": {
+          "source": 1
+        }
+      }
+    },
+    {
+      "sampler": 1,
+      "extensions": {
+        "KHR_texture_basisu": {
+          "source": 2
+        }
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "squirtle only face",
+      "mimeType": "image/ktx2",
+      "uri": "squirtle%20only%20face.ktx2"
+    },
+    {
+      "name": "Cup PEA 2",
+      "mimeType": "image/ktx2",
+      "uri": "Cup%20PEA%202.ktx2"
+    },
+    {
+      "name": "Base  Shadow UV Pea",
+      "mimeType": "image/ktx2",
+      "uri": "Base%20%20Shadow%20UV%20Pea.ktx2"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "just%20the%20cup.bin",
+      "byteLength": 43252
+    }
+  ],
+  "materials": [
+    {
+      "name": "Sticker Base",
+      "alphaMode": "MASK",
+      "alphaCutoff": 0.5,
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.800070583820343,
+          0.0842604860663414,
+          0.4905560314655304,
+          0
+        ],
+        "roughnessFactor": 0.5,
+        "metallicFactor": 0
+      }
+    },
+    {
+      "name": "Chai Sticker",
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "roughnessFactor": 0.25909093022346497,
+        "metallicFactor": 0,
+        "baseColorTexture": {
+          "index": 0
+        }
+      }
+    },
+    {
+      "name": "Mug Base",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "roughnessFactor": 0.9,
+        "metallicFactor": 0,
+        "baseColorTexture": {
+          "index": 1
+        }
+      },
+      "extensions": {
+        "KHR_materials_unlit": {}
+      }
+    },
+    {
+      "name": "Coffee",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.40026283264160156,
+          0.16883166134357452,
+          0.06191475689411163,
+          1
+        ],
+        "roughnessFactor": 0.19545455276966095,
+        "metallicFactor": 0
+      }
+    },
+    {
+      "name": "Material.001",
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0,
+        "baseColorTexture": {
+          "index": 2
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Solid 157.004",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "NORMAL": 2,
+            "TEXCOORD_0": 3
+          },
+          "mode": 4,
+          "material": 0,
+          "indices": 0,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 0,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        },
+        {
+          "attributes": {
+            "POSITION": 5,
+            "NORMAL": 6,
+            "TEXCOORD_0": 7
+          },
+          "mode": 4,
+          "material": 1,
+          "indices": 4,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 1,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pipe.002",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 9,
+            "NORMAL": 10,
+            "TEXCOORD_0": 11
+          },
+          "mode": 4,
+          "material": 2,
+          "indices": 8,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 2,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        },
+        {
+          "attributes": {
+            "POSITION": 13,
+            "NORMAL": 14,
+            "TEXCOORD_0": 15
+          },
+          "mode": 4,
+          "material": 3,
+          "indices": 12,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 3,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Plane.014",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 17,
+            "NORMAL": 18,
+            "TEXCOORD_0": 19
+          },
+          "mode": 4,
+          "material": 4,
+          "indices": 16,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 4,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cup Sticker. backup 2",
+      "translation": [
+        -3.751504421234131,
+        -0.0001636735541978851,
+        -0.8331049680709839
+      ],
+      "mesh": 0
+    },
+    {
+      "name": "Cup Base",
+      "translation": [
+        -3.751504421234131,
+        -0.00016365981718990952,
+        -0.8331049680709839
+      ],
+      "mesh": 1
+    },
+    {
+      "name": "Plane",
+      "translation": [
+        -3.4882359504699707,
+        -0.0005016326904296875,
+        -1.1163105964660645
+      ],
+      "mesh": 2
+    }
+  ],
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0,
+        1,
+        2
+      ]
+    }
+  ],
+  "scene": 0,
+  "extensionsUsed": [
+    "KHR_draco_mesh_compression",
+    "KHR_materials_unlit",
+    "KHR_texture_basisu"
+  ],
+  "extensionsRequired": [
+    "KHR_draco_mesh_compression",
+    "KHR_texture_basisu"
+  ]
+}
